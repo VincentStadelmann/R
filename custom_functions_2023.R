@@ -29,10 +29,17 @@ Source <- function(file, start, end, ...) {
 }
 
 # function to get labels from redcap data into a nice table
-
 redcap_labels_table = function(dat){
   lab = get_label(dat)
   data.frame(variable = names(lab), description=lab, row.names = NULL)
+}
+
+# Function to show information (name and type) of columns returned by SQL statement.
+cdpTableCols = function(tableName) {
+  tmpQuery = dbSendQuery(odbc_con, sprintf('SELECT * FROM "%s"', tableName))
+  cols = dbColumnInfo(tmpQuery) %>% filter(!str_detect(name, "^Dwh"))
+  dbClearResult(tmpQuery)
+  cols
 }
 
 
